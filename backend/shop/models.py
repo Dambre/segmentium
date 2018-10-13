@@ -5,9 +5,9 @@ from django.contrib.postgres.fields import ArrayField
 
 
 class Product(models.Model):
-    id = models.CharField(max_length=70, primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=50)
-    tags = ArrayField(models.CharField(max_length=50))
+    id = models.CharField(max_length=255, primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=255)
+    tags = ArrayField(models.CharField(max_length=255))
     price = models.IntegerField()
 
     def __str__(self):
@@ -15,7 +15,7 @@ class Product(models.Model):
 
 
 class Customer(models.Model):
-    name = models.CharField(max_length=50, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return 'Customer {}({})'.format(self.name or 'No name', self.pk)
