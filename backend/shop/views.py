@@ -69,7 +69,7 @@ def at_risk_repeat_customers(request):
     all_average_timedeltas = []
     for customer in customers:
         orders = sorted(customer['orders'], reverse=True)
-        timedeltas = [orders[i - 1] - orders[i] for i in range(1, len(orders))]        
+        timedeltas = [orders[i - 1] - orders[i] for i in range(1, len(orders))]
         customer_average = average_timedelta(timedeltas)
         customer.update({'average_between_orders': customer_average})
         all_average_timedeltas.append(customer_average)
