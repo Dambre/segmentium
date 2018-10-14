@@ -15,4 +15,5 @@ urlpatterns = [
     path('frequent-past-customers', views.frequent_past_customers),
     path('rare-products-buying-customers', views.rare_products_buying_customers),
     path('impulse-customers', views.impulse_customers),
+    path('customers', views.customers),
 ]

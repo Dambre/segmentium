@@ -141,6 +141,11 @@ def most_frequent_buyers(request):
     return JsonResponse(stats, safe=False)
 
 
+def customers(request):
+    customers = Customer.objects.all()
+    return JsonResponse([c.id for c in customers], safe=False)
+
+
 def most_used_tags(request):
     orders = Order.objects.select_related('product').all()
     total = Order.objects.count()
