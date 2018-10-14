@@ -28,3 +28,7 @@ class Order(models.Model):
 
     def __str__(self):
         return 'Order {}'.format(self.pk)
+
+    @property
+    def id_with_created_at(self):
+        return {'id': self.id, 'created_at': self.created_at}
