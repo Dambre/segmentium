@@ -143,7 +143,7 @@ def most_frequent_buyers(request):
 
 def customers(request):
     customers = Customer.objects.all()
-    return JsonResponse([c.id for c in customers], safe=False)
+    return JsonResponse([{'id': c.id, 'name': c.name} for c in customers], safe=False)
 
 
 def most_used_tags(request):
