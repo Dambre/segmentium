@@ -41,7 +41,7 @@ def loyal_customers(request):
         .values('customer')\
         .annotate(total=Count('customer'))\
         .annotate(orders=ArrayAgg('created_at'))\
-        .filter(total__gt=10)
+        .filter(total__gt=2)
     all_average_timedeltas = []
     for customer in customers:
         orders = sorted(customer['orders'], reverse=True)
@@ -49,7 +49,6 @@ def loyal_customers(request):
         customer_average = average_timedelta(timedeltas)
         customer.update({'average_between_orders': customer_average})
         all_average_timedeltas.append(customer_average)
-
     customers = sorted(customers, key=lambda x: x['average_between_orders'], reverse=True)[int(len(customers) * 0.2):int(len(customers) * 0.5)]
     stats = {
         'tag': 'loyal_customers',
