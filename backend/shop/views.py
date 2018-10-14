@@ -172,5 +172,6 @@ def tags_dict_to_list(tags, total):
     return sorted([{
         'tag': k,
         'amount': v['amount'],
+        'total': total,
         'customers': v['customers'],
     } for k, v in tags.items()], key=lambda x: x['amount'], reverse=True)
