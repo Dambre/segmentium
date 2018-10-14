@@ -53,7 +53,8 @@ def loyal_customers(request):
     customers = sorted(customers, key=lambda x: x['average_between_orders'], reverse=True)[int(len(customers) * 0.2):int(len(customers) * 0.5)]
     stats = {
         'tag': 'loyal_customers',
-        'amount': sum([c['total'] for c in customers]) * 100 / orders_count,
+        'amount': sum([c['total'] for c in customers]),
+        'total': orders_count,
         'customers': [c['customer'] for c in customers]
     }
     return JsonResponse(stats)
@@ -79,7 +80,8 @@ def at_risk_repeat_customers(request):
     stats = {
         'tips': "Make sure they don't leave you! Send them coupon codes, 'We miss you' emails, win-back surveys",
         'tag': 'at_risk_repeat_customers',
-        'amount': sum([c['total'] for c in customers]) * 100 / orders_count,
+        'amount': sum([c['total'] for c in customers]),
+        'total': orders_count,
         'customers': [c['customer'] for c in customers]
     }
     return JsonResponse(stats)
@@ -99,7 +101,8 @@ def repeat_customers(request):
     stats = {
         'tips': 'Send them refer-a-friend prompts, complementary product recommendations, product review requests',
         'tag': 'repeat_customers',
-        'amount': sum([c['total'] for c in customers]) * 100 / orders_count,
+        'amount': sum([c['total'] for c in customers]),
+        'total': orders_count,
         'customers': [c['customer'] for c in customers]
     }
     return JsonResponse(stats)
@@ -115,7 +118,8 @@ def one_time_customers(request):
     stats = {
         'tips': 'Send them related products, product discounts, product review requests',
         'tag': 'one_time_customers',
-        'amount': sum([c['total'] for c in customers]) * 100 / orders_count,
+        'amount': sum([c['total'] for c in customers]),
+        'total': orders_count,
         'customers': [c['customer'] for c in customers]
     }
     return JsonResponse(stats)
@@ -130,7 +134,8 @@ def most_frequent_buyers(request):
         .order_by('-total')[:int(customers_count / 10)]
     stats = {
         'tag': 'most_frequent_buyers',
-        'amount': sum([c['total'] for c in customers]) * 100 / orders_count,
+        'amount': sum([c['total'] for c in customers]),
+        'total': orders_count,
         'customers': [c['customer'] for c in customers]
     }
     return JsonResponse(stats, safe=False)
@@ -138,10 +143,11 @@ def most_frequent_buyers(request):
 
 def most_used_tags(request):
     orders = Order.objects.select_related('product').all()
-    return JsonResponse(calculate_order_statistics(orders), safe=False)
+    total = Order.objects.count()
+    return JsonResponse(calculate_order_statistics(orders, total), safe=False)
 
 
-def calculate_order_statistics(orders):
+def calculate_order_statistics(orders, total):
     used_tags = defaultdict(dict)
     for order in orders:
         for tag in order.product.tags:
@@ -154,10 +160,10 @@ def calculate_order_statistics(orders):
             except KeyError:
                 used_tags[tag]['customers'] = [order.customer_id]
 
-    return tags_dict_to_list(used_tags)
+    return tags_dict_to_list(used_tags, total)
 
 
-def tags_dict_to_list(tags):
+def tags_dict_to_list(tags, total):
     return sorted([{
         'tag': k,
         'amount': v['amount'],
